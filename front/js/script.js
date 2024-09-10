@@ -1,18 +1,16 @@
 function getCharacter() {
-    const nameInput = document.getElementById("nombre");
-    const info = document.getElementById("info");
+    const nameInput = document.getElementById('character');
+    const info = document.getElementById('info');
    
     const characterName = nameInput.value.toLowerCase();
-
-    fetch(`https://rickandmortyapi.com/api/character/?name=${characterName}`)
+    
+    
+    fetch(`http://localhost:3000/characters/${characterName}`)
+    
         .then(response => response.json())
-        .then(data => {
-            
-            // Verificamos que haya resultados
-            if (data.results && data.results.length > 0) {
-                const personajes = data.results[0];
-               
-                const {name, status, species, gender, origin: {name: planetDimension}, image} = personajes;
+        .then(data => {       
+            if (data) {
+              const {name, status, species, gender, origin: {name: planetDimension}, image} = data;
                 info.innerHTML = `
                     <h2>${name}</h2>
                     <img src="${image}" alt="${name}"/>
