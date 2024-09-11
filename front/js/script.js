@@ -1,29 +1,30 @@
-function getCharacter() {
-    const nameInput = document.getElementById('character');
-    const info = document.getElementById('info');
-   
-    const characterName = nameInput.value.toLowerCase();
+const getCharacter = async () => {
+    const characterName = document.getElementById('character').value.toLowerCase();
+    const result = document.getElementById('result');
+    const urlBase = `http://localhost:3000/characters/${characterName}`
+ 
     
-    
-    fetch(`http://localhost:3000/characters/${characterName}`)
-    
-        .then(response => response.json())
-        .then(data => {       
-            if (data) {
-              const {name, status, species, gender, origin: {name: planetDimension}, image} = data;
-                info.innerHTML = `
-                    <h2>${name}</h2>
+    try {
+        const response = await fetch(urlBase)
+        const data = await response.json()
+        result.innerHTML = `
+        ${data.map(character => {
+            const {name, status, gender, species, image, origin: {name: origin} } = character
+            return `
+            <h2>${name}</h2>
                     <img src="${image}" alt="${name}"/>
-                    <p>Status: ${status}</p>
-                    <p>Especie: ${species}</p>
-                    <p>Género: ${gender}</p>
-                    <p>Origen: ${planetDimension}</p>
+                    <p><strong>Status:</strong> ${status}</p>
+                    <p><strong>Especie:</strong> ${species}</p>
+                    <p><strong>Género:</strong> ${gender}</p>
+                    <p><strong>Origen:</strong> ${origin}</p>
                 `;
-            } else {
-                info.innerHTML = `<p>No se encontró ningún personaje con ese nombre.</p>`;
-            }
-        })
-        .catch(error => {
-            info.innerHTML = `<p>Imposible acceder al personaje. Error: ${error.message}</p>`;
-        });
+               })}
+        ` 
+    }catch (err) {
+        console.log(`Este es el error: ${err}`)
+        result.innerHTML = 'El personaje no se ha encontrado'
+
+    }
 }
+
+  
